@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Fish (Shopify Filter & Search Service)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6e6e6; background: #121212; }
+    a { color: #7db8ff; }
+    .todo { background: #3a2a00; border-color: #6b4e00; }
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  h2 { font-size: 1.15rem; margin-top: 2rem; }
+  .effective-date { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .todo {
+    background: #fff8e1;
+    border: 1px solid #f0d060;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+  }
+  code { font-size: 0.85em; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #777; }
+</style>
+</head>
+<body>
+
+<h1>Privacy Policy — Fish</h1>
+<p class="effective-date">Effective date: 2026-08-12</p>
+
+<p>Fish ("<strong>we</strong>", "<strong>the App</strong>") is a Shopify app
+that provides collection filtering and search for the merchant's storefront.
+This policy explains what data we collect, why, where it is stored, how long
+we keep it, and how merchants and shoppers can exercise their rights.</p>
+
+<h2>1. Data we collect</h2>
+
+<h3>1.1 From the merchant (shop owner)</h3>
+<ul>
+  <li><strong>Shop domain, OAuth access token, granted scopes, install timestamp</strong> — required to call the Shopify Admin API on the merchant's behalf.</li>
+  <li><strong>Billing status</strong> — current plan, subscription status, last-checked timestamp, Shopify shop GID — used to enforce plan limits and show usage on the "Plan" dashboard tab.</li>
+  <li><strong>App configuration</strong> the merchant sets in the dashboard — search settings, synonym groups, hidden-product rules, tag exclusions, boost rules, and (if the merchant opts into semantic search) an API key for a third-party embedding provider they supply themselves (see 1.3).</li>
+  <li><strong>Product review data</strong>, if the merchant uploads a CSV export from their review platform — review text, rating, and the product it matches to. We do not collect this from shoppers directly; the merchant supplies it.</li>
+</ul>
+
+<h3>1.2 From shoppers (storefront visitors)</h3>
+<p>We do <strong>not</strong> collect names, email addresses, physical
+addresses, or any other data that directly identifies a shopper.</p>
+<ul>
+  <li><strong>Search query text and aggregate counts</strong> — what shoppers typed into search, how many times, and whether it returned results — stored per shop, keyed by the query text itself, not by shopper or session.</li>
+  <li><strong>Filter usage counts</strong> — which filter options were opened/selected and how often, aggregated per shop and filter value (no per-shopper tracking).</li>
+  <li><strong>Order line items</strong>, from Shopify order webhooks, used only to compute bestseller/trending product rankings — product SKU, name, quantity, order status. We do not store the buyer's name, email, address, or payment details.</li>
+  <li><strong>IP address</strong> — used transiently, in memory only, to rate-limit storefront API requests. It is never written to our database.</li>
+</ul>
+
+<h3>1.3 Shared with third parties (only if the merchant opts in)</h3>
+<p>If a merchant enables <strong>semantic search</strong> and supplies their
+own API key for a provider (OpenAI, Voyage AI, Cohere, Jina AI, Google, or
+HuggingFace), search query text and product text are sent to that provider
+to generate embeddings. This only happens for shops that turn the feature on
+and provide a key; it is off by default.</p>
+<p>We do not sell any data, and we do not share shopper data with anyone for
+advertising or marketing purposes.</p>
+
+<h2>2. Where data is stored</h2>
+<ul>
+  <li><strong>PostgreSQL</strong>, self-hosted on our own server infrastructure (not a third-party data warehouse), holds everything in §1.1 and §1.2.</li>
+  <li><strong>Meilisearch</strong>, on the same infrastructure, holds a copy of the merchant's product/collection/page catalog for search and filtering. It does not receive shopper data — only catalog content the merchant already published on their storefront.</li>
+</ul>
+<div class="todo">[TODO before publishing: state the hosting country/region here for GDPR/CCPA transfer disclosures.]</div>
+
+<h2>3. Retention</h2>
+<ul>
+  <li><strong>Search query logs</strong> are deleted automatically once they exceed the retention window for the merchant's plan (Starter/Pro/Ultimate — the exact number of days is shown on the "Plan" tab of the app dashboard). A daily job purges expired rows.</li>
+  <li><strong>Hourly request-volume counters</strong>, used only for the traffic charts on the "Plan" tab, are kept for 40 days and then purged by the same job.</li>
+  <li>Merchant configuration, billing status, and catalog data are kept for as long as the app remains installed, per §4.</li>
+</ul>
+
+<h2>4. Deletion on uninstall / merchant request</h2>
+<ul>
+  <li>Uninstalling the app immediately revokes our stored access token, so we can no longer access the shop's Shopify data.</li>
+  <li>Within the timeframe Shopify's platform requires, we receive a mandatory <code>shop/redact</code> webhook and permanently delete all data tied to that shop domain — configuration, search logs, order-line data, review data, sync history — and remove the shop's search index.</li>
+  <li>We do not store data that directly identifies individual shoppers (see §1.2), so <code>customers/data_request</code> and <code>customers/redact</code> webhooks are acknowledged with no shopper-identifying records to return or delete.</li>
+</ul>
+
+<h2>5. Your rights</h2>
+<p>Merchants can request a copy of their stored configuration or ask for
+early deletion by contacting us at
+<a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a>. Shoppers
+with questions about a specific store's data practices should contact that
+store directly — we act as the store's data processor, not as the data
+controller for their storefront.</p>
+
+<h2>6. Changes to this policy</h2>
+<p>We will update the effective date above and, for material changes,
+notify merchants through the app dashboard or by email.</p>
+
+<h2>7. Contact</h2>
+<p>Individual Entrepreneur (Sole Proprietor) Ivankov Aleksander Sergeevich,
+Russian Federation.<br>
+Email: <a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a></p>
+
+<footer>Fish — Shopify Filter &amp; Search Service</footer>
+
+</body>
+</html>
