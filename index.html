@@ -38,80 +38,169 @@
 <body>
 
 <h1>Privacy Policy — Fish</h1>
-<p class="effective-date">Effective date: 2026-08-12</p>
+<p class="effective-date">Effective date: 2026-09-28</p>
 
-<p>Fish ("<strong>we</strong>", "<strong>the App</strong>") is a Shopify app
-that provides collection filtering and search for the merchant's storefront.
-This policy explains what data we collect, why, where it is stored, how long
-we keep it, and how merchants and shoppers can exercise their rights.</p>
-
+<p>Fish ("<strong>we</strong>", "<strong>the App</strong>") is a Shopify app that provides collection
+filtering and search for the merchant's storefront. This policy explains
+what data we collect, why, where it is stored, how long we keep it, and how
+merchants and shoppers can exercise their rights.</p>
 <h2>1. Data we collect</h2>
-
 <h3>1.1 From the merchant (shop owner)</h3>
 <ul>
-  <li><strong>Shop domain, OAuth access token, granted scopes, install timestamp</strong> — required to call the Shopify Admin API on the merchant's behalf.</li>
-  <li><strong>Billing status</strong> — current plan, subscription status, last-checked timestamp, Shopify shop GID — used to enforce plan limits and show usage on the "Plan" dashboard tab.</li>
-  <li><strong>App configuration</strong> the merchant sets in the dashboard — search settings, synonym groups, hidden-product rules, tag exclusions, boost rules, and (if the merchant opts into semantic search) an API key for a third-party embedding provider they supply themselves (see 1.3).</li>
-  <li><strong>Product review data</strong>, if the merchant uploads a CSV export from their review platform — review text, rating, and the product it matches to. We do not collect this from shoppers directly; the merchant supplies it.</li>
+<li><strong>Shop domain, OAuth access token, granted scopes, install timestamp</strong> —
+  required to call the Shopify Admin API on the merchant's behalf.</li>
+<li><strong>Billing status</strong> — current plan, subscription status, last-checked
+  timestamp, Shopify shop GID — used to enforce plan limits and show usage
+  on the "Plan" dashboard tab.</li>
+<li><strong>App configuration</strong> the merchant sets in the dashboard — search
+  settings, synonym groups, hidden-product rules, tag exclusions, boost
+  rules, and (if the merchant opts into semantic search) an API key for a
+  third-party embedding provider they supply themselves (§1.3).</li>
+<li><strong>Product review data</strong>, if the merchant uploads a CSV export from their
+  review platform — review text, rating, and the product it matches to.
+  We do not collect this from shoppers directly; the merchant supplies it.</li>
 </ul>
-
 <h3>1.2 From shoppers (storefront visitors)</h3>
-<p>We do <strong>not</strong> collect names, email addresses, physical
-addresses, or any other data that directly identifies a shopper.</p>
+<p>We do <strong>not</strong> collect names, email addresses, physical addresses, or any
+other data that directly identifies a shopper.</p>
 <ul>
-  <li><strong>Search query text and aggregate counts</strong> — what shoppers typed into search, how many times, and whether it returned results — stored per shop, keyed by the query text itself, not by shopper or session.</li>
-  <li><strong>Filter usage counts</strong> — which filter options were opened/selected and how often, aggregated per shop and filter value (no per-shopper tracking).</li>
-  <li><strong>Order line items</strong>, from Shopify order webhooks, used only to compute bestseller/trending product rankings — product SKU, name, quantity, order status. We do not store the buyer's name, email, address, or payment details.</li>
-  <li><strong>IP address</strong> — used transiently, in memory only, to rate-limit storefront API requests. It is never written to our database.</li>
+<li><strong>Search query text and aggregate counts</strong> — what shoppers typed into
+  search, how many times, and whether it returned results — stored per
+  shop, keyed by the query text itself, not by shopper or session.</li>
+<li><strong>Product view counts</strong> — how many times each product was shown from
+  search, a collection or its own page, and for search the normalized query
+  text that led to it — aggregated per shop, product, source and query, not
+  by shopper or session.</li>
+<li><strong>Filter usage counts</strong> — which filter options were opened/selected and
+  how often, aggregated per shop and filter value (no per-shopper tracking).</li>
+<li><strong>Order line items</strong>, from Shopify order webhooks, used only to compute
+  bestseller/trending product rankings — product SKU, name, quantity,
+  order status. We do not store the buyer's name, email, address, or
+  payment details.</li>
+<li><strong>IP address</strong> — used to rate-limit storefront API requests and to reject
+  forged webhooks. It is recorded in two places:</li>
+<li><strong>the web server's access log</strong>, on the same line as the requested URL,
+    the country the request came from and the browser's user agent. For a
+    search request that URL contains the search text, so while these log
+    files exist the address and the search sit together. The logs are capped
+    by size rather than by time — three files of 20 MB — which at current
+    traffic is roughly 10 hours before older entries are discarded
+    [measured 2026-08-30]. We do not copy that pairing anywhere else and do
+    not use it to build a profile of a shopper.</li>
+<li><strong>the database</strong>, and only for a webhook that fails its signature check.
+    That is a record about the sender of a forged request, not about a
+    shopper; those rows are deleted after 7 days.</li>
 </ul>
-
 <h3>1.3 Shared with third parties (only if the merchant opts in)</h3>
-<p>If a merchant enables <strong>semantic search</strong> and supplies their
-own API key for a provider (OpenAI, Voyage AI, Cohere, Jina AI, Google, or
-HuggingFace), search query text and product text are sent to that provider
-to generate embeddings. This only happens for shops that turn the feature on
-and provide a key; it is off by default.</p>
-<p>We do not sell any data, and we do not share shopper data with anyone for
-advertising or marketing purposes.</p>
-
+<p>If a merchant enables <strong>semantic search</strong> and supplies their own API key
+for a provider (OpenAI, Voyage AI, Cohere, Jina AI, Google, or
+HuggingFace), search query text and product text are sent to that
+provider to generate embeddings. This only happens for shops that turn
+the feature on and provide a key; it is off by default.</p>
+<h3>1.4 Service providers that process data for us</h3>
+<p>To run the App we rely on the following providers. Each receives only what
+it needs for its function:</p>
+<ul>
+<li><strong>Shopify</strong> — the platform the App is built on; we read catalog data and
+  write product tags and metafields through its Admin API.</li>
+<li><strong>Cybercon, Inc.</strong> (United States) — hosting of our primary server, which
+  holds all data described in §1.1 and §1.2.</li>
+<li><strong>A hosting provider in France (EU)</strong> — the standby server that holds a
+  daily copy of the database, without Shopify access tokens or webhook secrets.</li>
+<li><strong>Cloudflare</strong> — network proxy in front of our API. Storefront requests,
+  including the search text in their URLs, pass through it.</li>
+<li><strong>Backblaze B2</strong> (United States) — off-site storage of database backups,
+  which are encrypted before they leave our server.</li>
+<li><strong>Anthropic</strong> (Claude API) — analysis of our own operational alert
+  messages. These contain system status and shop domains, not shopper data.</li>
+<li><strong>Google (Gmail)</strong> — delivery of those alert messages to our own mailbox.</li>
+</ul>
+<p>Cloudflare, Backblaze and Anthropic process data under data processing terms
+that include the EU Standard Contractual Clauses for transfers outside the
+European Economic Area.</p>
+<p>We do not sell any data, and we do not share shopper data with anyone
+for advertising or marketing purposes.</p>
 <h2>2. Where data is stored</h2>
 <ul>
-  <li><strong>PostgreSQL</strong>, self-hosted on our own server infrastructure (not a third-party data warehouse), holds everything in §1.1 and §1.2.</li>
-  <li><strong>Meilisearch</strong>, on the same infrastructure, holds a copy of the merchant's product/collection/page catalog for search and filtering. It does not receive shopper data — only catalog content the merchant already published on their storefront.</li>
+<li><strong>PostgreSQL</strong>, self-hosted on our own server infrastructure (not a
+  third-party data warehouse), holds everything in §1.1 and §1.2.</li>
+<li><strong>Meilisearch</strong>, on the same infrastructure, holds a copy of the
+  merchant's product/collection/page catalog for search and filtering.
+  It does not receive shopper data — only catalog content the merchant
+  already published on their storefront.</li>
+<li><strong>Backups.</strong> A database dump is taken daily and kept on the same server for
+  7 days. The copy sent off-site to Backblaze B2 is <strong>encrypted before it
+  leaves the server</strong>, with a key the server itself does not hold — so reading
+  the server does not yield the off-site archive. All copies in that store are
+  encrypted, including those uploaded before the change.</li>
+<li><strong>A standby server</strong> holds a daily copy of the database so the storefront
+  keeps working if the main one fails. Shopify access tokens and webhook
+  secrets are removed from that copy before it is sent.</li>
 </ul>
-<p>Our server is hosted in the <strong>United States (St. Louis,
-Missouri)</strong>, via hosting provider Cybercon, Inc.</p>
-
+<p>Our primary server is hosted in the <strong>United States (St. Louis, Missouri)</strong>
+by Cybercon, Inc. The standby server that holds the daily database copy
+described above is hosted in <strong>France (Strasbourg, European Union)</strong>.
+Off-site backups are stored with Backblaze B2 in its <strong>US-East</strong> region and
+are deleted 90 days after upload.</p>
 <h2>3. Retention</h2>
 <ul>
-  <li><strong>Search query logs</strong> are deleted automatically once they exceed the retention window for the merchant's plan (Starter/Pro/Ultimate — the exact number of days is shown on the "Plan" tab of the app dashboard). A daily job purges expired rows.</li>
-  <li><strong>Hourly request-volume counters</strong>, used only for the traffic charts on the "Plan" tab, are kept for 40 days and then purged by the same job.</li>
-  <li>Merchant configuration, billing status, and catalog data are kept for as long as the app remains installed, per §4.</li>
+<li><strong>Search query logs</strong> are deleted automatically once they exceed the
+  retention window for the merchant's plan (Starter/Pro/Ultimate — the
+  exact number of days is shown on the "Plan" tab of the app dashboard).
+  A daily job purges expired rows.</li>
+<li><strong>Product view counts</strong> are kept for 365 days after a row was last updated,
+  then purged by a daily job.</li>
+<li><strong>Hourly request-volume counters</strong>, used only for the traffic charts on
+  the "Plan" tab, are kept for 40 days and then purged by the same job.</li>
+<li>Merchant configuration, billing status, and catalog data are kept for
+  as long as the app remains installed, per §4.</li>
+<li><strong>Order line items</strong> — the product, quantity and order number behind our
+  bestseller and trending rankings — are kept for <strong>180 days</strong>. The window is
+  that long because ranking is computed from a 90-day sales history; shorter
+  retention would break it. A shopper's rows are also deleted on request ahead
+  of that, per §4.</li>
+<li><strong>Operational records</strong> — webhook delivery log 30 days, indexing queue
+  7 days, sync/job/alert history 90 days — purged by a daily job.</li>
+<li><strong>Service logs</strong> (web server access log, application log) are capped by size
+  rather than by time; see §1.2.</li>
+<li><strong>Backups are the exception to everything above.</strong> Deleting data from the
+  live database does not reach copies already inside a dated backup, so an
+  erasure request takes effect in the live system at once and in the backups as
+  they expire. Local backups expire after 7 days; off-site copies at Backblaze
+  B2 (region us-east-005) after 90 days. Ninety days is therefore the outer
+  bound on how long a deleted record can survive anywhere.</li>
 </ul>
-
 <h2>4. Deletion on uninstall / merchant request</h2>
 <ul>
-  <li>Uninstalling the app immediately revokes our stored access token, so we can no longer access the shop's Shopify data.</li>
-  <li>Within the timeframe Shopify's platform requires, we receive a mandatory <code>shop/redact</code> webhook and permanently delete all data tied to that shop domain — configuration, search logs, order-line data, review data, sync history — and remove the shop's search index.</li>
-  <li>We do not store data that directly identifies individual shoppers (see §1.2), so <code>customers/data_request</code> and <code>customers/redact</code> webhooks are acknowledged with no shopper-identifying records to return or delete.</li>
+<li>Uninstalling the app immediately revokes our stored access token, so we
+  can no longer access the shop's Shopify data.</li>
+<li>Within the timeframe Shopify's platform requires, we receive a mandatory
+  <code>shop/redact</code> webhook and permanently delete all data tied to that shop
+  domain — configuration, search logs, order-line data, review data,
+  sync history — and remove the shop's search index.</li>
+<li>We do not store a shopper's name, email address or postal address. We do
+  store <strong>order line items</strong> linked to a Shopify order number (§1.2), and a
+  shopper is identifiable through that number. So the two shopper-facing
+  webhooks are executed, not merely acknowledged:</li>
+<li><code>customers/redact</code> — we delete every order-line row for the orders Shopify
+    lists in the request, scoped to the shop that sent it.</li>
+<li><code>customers/data_request</code> — we look up what we hold for the orders listed
+    and provide it to the merchant, who passes it to the shopper. Shopify has
+    no API to answer this webhook with data, so the export is prepared by hand
+    within the platform's 30-day window.</li>
 </ul>
-
 <h2>5. Your rights</h2>
 <p>Merchants can request a copy of their stored configuration or ask for
-early deletion by contacting us at
-<a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a>. Shoppers
-with questions about a specific store's data practices should contact that
+early deletion by contacting us at <a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a>. Shoppers with
+questions about a specific store's data practices should contact that
 store directly — we act as the store's data processor, not as the data
 controller for their storefront.</p>
-
 <h2>6. Changes to this policy</h2>
-<p>We will update the effective date above and, for material changes,
-notify merchants through the app dashboard or by email.</p>
-
+<p>We will update the effective date above and, for material changes, notify
+merchants through the app dashboard or by email.</p>
 <h2>7. Contact</h2>
 <p>Individual Entrepreneur (Sole Proprietor) Ivankov Aleksander Sergeevich,
-Russian Federation.<br>
-Email: <a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a></p>
+Russian Federation. Email: <a href="mailto:parsedata633@gmail.com">parsedata633@gmail.com</a>.</p>
 
 <footer>Fish — Shopify Filter &amp; Search Service</footer>
 
